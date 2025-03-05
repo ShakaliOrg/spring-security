@@ -18,11 +18,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void registerUser(String username, String rawPassword, String role) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(rawPassword)); // Хешируем пароль
-        user.setRole(role);
         userRepository.save(user);
     }
 }
