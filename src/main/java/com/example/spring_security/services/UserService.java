@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 public class UserService {
@@ -19,10 +21,19 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(String username, String rawPassword, String role) {
+    public void registerUser(String username, String password) {
+        System.out.println("Начало регистрации пользователя: " + username); // Проверка
+
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(rawPassword)); // Хешируем пароль
-        userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(password));
+
+        userRepository.save(user); // <-- Сохранение в БД
+        System.out.println("Пользователь сохранен в БД!"); // Проверка
+    }
+
+
+    public final Optional<User> getUserByUsername(String name) {
+        return userRepository.findByUsername(name);
     }
 }
