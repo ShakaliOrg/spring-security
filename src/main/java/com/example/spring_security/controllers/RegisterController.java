@@ -41,21 +41,15 @@ public class RegisterController {
 
     @PostMapping("/login")
     public Map<String, String> performLogin(@RequestBody AuthDto authenticationDTO) {
-        // Создаем объект для аутентификации с именем пользователя и паролем
+
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
 
         try {
-            // Пытаемся аутентифицировать пользователя
             Authentication authentication = authenticationManager.authenticate(authInputToken);
-
-            // Если аутентификация успешна, генерируем JWT токен
             String token = jwt.generateToken(authentication.getName());
-
-            // Возвращаем токен в виде JSON-ответа
-            return Map.of("jwt-token", token);
+            return Map.of("jwt-token", "Login success!");
         } catch (BadCredentialsException e) {
-            // Если аутентификация не прошла, возвращаем сообщение о неверных данных
             return Map.of("message", "Incorrect credentials!");
         }
     }
