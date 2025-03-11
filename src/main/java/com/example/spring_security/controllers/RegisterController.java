@@ -62,21 +62,16 @@ public class RegisterController {
 
     // по-хорошему выбрасивать исключение
     @PostMapping("/register")
-    public Map<String, String> registerUser(@RequestBody @Valid UserDto userDto,
-                               BindingResult bindingResult) {
+    public Map<String, String> performRegister(@RequestBody @Valid UserDto userDto,
+                                            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+            return Map.of("message", "Error");
+        }
 
-        User user = convertToUser(userDto);
-        userValidator.validate(user, bindingResult);
-         if(bindingResult.hasErrors()) {
-             return Map.of("massage", "Error");
-         }
-
-        userService.registerUser(user.getUsername(), user.getPassword());
-        String token = jwt.generateToken(user.getUsername());
-        // Возвращаем токен в JSON-ответе
-//        return ResponseEntity.ok(Map.of("jwt-token", token));
-         return Map.of("jwt-token", token);
-
+        userService.registerUser(userDto.getUsername(), userDto.getPassword());
+        String token = jwt.generateToken(userDto.getUsername());
+        return Map.of("jwt-token", token);
     }
 
     public User convertToUser(UserDto userDto) {
