@@ -58,6 +58,8 @@ public class RegisterController {
     @PostMapping("/register")
     public Map<String, String> performRegister(@RequestBody @Valid UserDto userDto,
                                             BindingResult bindingResult) {
+
+        userValidator.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             return Map.of("message", "Error");
